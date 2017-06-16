@@ -14,8 +14,32 @@ import speedatacom.a3310libs.inf.IPsam;
  */
 
 public class Test {
+    public static void main(String[] arg) {
+        System.out.println("hhh");
+        getOrder(2048,200);
+
+    }
+    public static byte[] getOrder(int sum,int len){
+
+        int cecle = sum / len;
+        System.out.println("cecle=" + cecle);
+        int yushu = sum % len;
+        if (yushu > 0)
+            cecle = cecle + 1;
+        System.out.println("cecle=" + cecle);
+        System.out.println("yushu=" + yushu);
+        byte[] result = new byte[2];
+        for (int i = 0; i < cecle; i++) {
+            byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 + 0xc8 * i);
+            System.out.println(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
+            return temp1;
+        }
+        return null;
+    }
+
     private boolean isBlankCard = false;//是否是白卡
     private IPsam psamIntance = PsamManager.getPsamIntance();
+
     /**
      * PSAM 测试流程
      */

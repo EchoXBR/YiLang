@@ -178,21 +178,29 @@ public class CardManager {
         byte[] result = new byte[2048];
         if (RenZheng((byte) 0x06, (byte) 0x04)) {
             byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0xC8};
-            logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+//            logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
             byte[] bytes = new byte[0];
             int cecle = result.length / 200;
             int yushu = result.length % 200;
             if (yushu != 0)
-                cecle = +1;
-            for (; cecle < 0; cecle--) {
+                cecle = cecle+1;
+            for (int i = 0; i < cecle; i++) {
+                byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 + 0xc8 * i);
+                logger.d(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
+//                byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 + 0xc8 * i);
+//                logger.d("zhuanhuan="+DataConversionUtils.byteArrayToStringLog(temp1,temp1.length));
+                bytes1[3]=temp1[1];
+                bytes1[4]=temp1[0];
+                try {
+                    logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
 
+                    bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                logger.d("getPhotoDatalen="+bytes.length+"   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
             }
-            try {
-                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            logger.d("getPhotoData" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+
             return bytes;
         } else {
             return null;
@@ -201,7 +209,7 @@ public class CardManager {
 
     /**
      * @param file 要读取的文件
-     * @param dack 秘药索引
+     * @param dack 秘钥索引
      * @return 认证结果
      */
     private boolean RenZheng(byte file, byte dack) {
