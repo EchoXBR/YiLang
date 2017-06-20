@@ -13,7 +13,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@mipmap/icon_username"
-        android:text="许百茹"
+        android:text="鹿晗"
         android:maxLength="6" />
 
     <RadioGroup
