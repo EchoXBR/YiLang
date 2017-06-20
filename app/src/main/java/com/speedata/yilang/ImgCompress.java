@@ -15,11 +15,11 @@ import java.io.ByteArrayOutputStream;
 public class ImgCompress {
     public static byte[] compressBitmap(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.PNG, 60, baos);
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         // 判断如果图片大于1M,进行压缩避免在生成图片（BitmapFactory.decodeStream）时溢出
         while (baos.toByteArray().length > 2048) {
             baos.reset();// 重置baos即清空baos
-            bmp.compress(Bitmap.CompressFormat.JPEG, 60, baos);// 这里压缩50%，把压缩后的数据存放到baos中
+            bmp.compress(Bitmap.CompressFormat.JPEG, 15, baos);// 这里压缩50%，把压缩后的数据存放到baos中
             System.out.println("compressBitmap len="+baos.toByteArray().length);
         }
         final byte[] data = baos.toByteArray();

@@ -87,8 +87,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         imgPhoto.setImageBitmap(bitmap);
                         break;
                     case "李四":
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_2);
-                        resPhotoID = R.mipmap.photo_2;
+                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_3);
+                        resPhotoID = R.mipmap.photo_3;
                         imgPhoto.setImageBitmap(bitmap);
                         break;
 
@@ -124,12 +124,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         ProgressDialogUtils.dismissProgressDialog();
                         return;
                     }
-                    final boolean result1 = cardManager.updateUserInfor(JSEscape.getNameByte(name));
+                    cardManager.updateUserInfor(new byte[64]);
+                    final boolean result1 = cardManager.updateUserInfor(JSEscape.getNameByte(name+","+Sex));
                     //TODO 更新性别
 
-                    final boolean result2 = cardManager.updatePhotoInfor(ImgCompress.compressBitmap
-                            (ImgCompress.decodeSampledBitmapFromResource(getResources(),
-                                    resPhotoID, 100, 100)));
+                    Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_1);
+
+                    final boolean result2 = cardManager.updatePhotoInfor(
+                            ImgCompress.compressBitmap(ImgCompress.decodeSampledBitmapFromResource(getResources(),resPhotoID,100,100)));
 
                     runOnUiThread(new Runnable() {
                         @Override

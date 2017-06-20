@@ -295,6 +295,8 @@ public class CardManager {
                 if (!isNULL(bytes)) {
                     logger.d("getFingerDatalen =" + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
                     int pic_len = DataConversionUtils.byteArrayToInt(new byte[]{bytes[0], bytes[1]});
+                    if(pic_len>1024)
+                        return null;
                     result = new byte[pic_len];
                     logger.d("getFingerDatalen=" + pic_len);
                     int cecle = (pic_len) / 200;
