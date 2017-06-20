@@ -27,6 +27,17 @@ public class CardManager {
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff,
             (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff};
 
+    /**
+     * 释放PSAM设备
+     */
+    public void realsePsam() {
+        try {
+            if (psam != null)
+                psam.releaseDev();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * psam 初始化

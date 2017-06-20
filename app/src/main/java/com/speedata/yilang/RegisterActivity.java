@@ -275,4 +275,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     .show();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cardManager.realsePsam();
+    }
 }

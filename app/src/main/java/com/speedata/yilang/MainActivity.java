@@ -1,5 +1,6 @@
 package com.speedata.yilang;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -20,11 +21,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnTest;
     private TextView tvTimes;
     private ImageView imageView;
+    private Button btnVer, btnRegister;
 
 
     CardManager cardManager = new CardManager();
@@ -35,8 +37,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         btnTest = (Button) findViewById(R.id.btn_start_test);
+        btnVer = (Button) findViewById(R.id.btn_ver);
+        btnRegister = (Button) findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(this);
+        btnVer.setOnClickListener(this);
         tvTimes = (TextView) findViewById(R.id.tv_time);
         imageView = (ImageView) findViewById(R.id.img_test);
+
         if (!cardManager.initPsam(this)) {
             Toast.makeText(this, "初始化失败", Toast.LENGTH_SHORT).show();
             tvTimes.setText("初始化失败");
@@ -109,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                 }).start();
             }
         });
-        btnTest.callOnClick();
+//        btnTest.callOnClick();
     }
 
     private void testUserData() {
@@ -164,13 +171,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private byte[] getPicBytes() {
-        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.PNG, 100, baos);
         // 判断如果图片大于1M,进行压缩避免在生成图片（BitmapFactory.decodeStream）时溢出
         while (baos.toByteArray().length > 2048) {
             baos.reset();// 重置baos即清空baos
-            bmp.compress(Bitmap.CompressFormat.JPEG, 80, baos);// 这里压缩50%，把压缩后的数据存放到baos中
+            bmp.compress(Bitmap.CompressFormat.JPEG, 20, baos);// 这里压缩50%，把压缩后的数据存放到baos中
+            System.out.println("compressBitmap len="+baos.toByteArray().length);
+
         }
         final byte[] data = baos.toByteArray();
         logger.d("pic len=" + data.length);
@@ -195,6 +204,17 @@ public class MainActivity extends AppCompatActivity {
             return BitmapFactory.decodeByteArray(b, 0, b.length);
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v == btnRegister) {
+            Intent intent = new Intent(MainActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        } else if (v == btnVer) {
+            Intent intent = new Intent(MainActivity.this, VerifyActivity.class);
+            startActivity(intent);
         }
     }
 }

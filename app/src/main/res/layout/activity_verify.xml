@@ -13,6 +13,7 @@
         android:layout_marginTop="10dp"
         android:textSize="20dp"/>
     <TextView
+        android:id="@+id/tv_user_infor"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -22,13 +23,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="照片信息"
-        android:layout_marginTop="10dp"
+
+        android:layout_marginTop="40dp"
         android:textSize="20dp"
         />
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
+        android:id="@+id/img_photo"
         android:layout_gravity="center_horizontal"
         android:src="@mipmap/icon_default_user"/>
     <Button
