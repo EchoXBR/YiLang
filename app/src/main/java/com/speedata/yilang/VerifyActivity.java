@@ -61,7 +61,9 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                         public void run() {
                             ProgressDialogUtils.dismissProgressDialog();
                             imgPhoto.setImageBitmap(bitmap);
-                            tvUserInfor.setText(userInfor.getName().replace("Q",""));
+                            String name = userInfor.getName().replace("Q", "");
+                            tvUserInfor.setText(name);
+                            logger.d("name="+name);
                         }
                     });
 
