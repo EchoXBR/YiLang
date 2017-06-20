@@ -40,16 +40,6 @@ public class CardManager {
             return false;
         }
 
-//        byte[] data = psam.PsamPower(IPsam.PowerType.Psam2);
-//        data = psam.PsamPower(IPsam.PowerType.Psam2);
-//        data = psam.PsamPower(IPsam.PowerType.Psam2);
-//        data = psam.PsamPower(IPsam.PowerType.Psam2);
-
-//        if (data == null) {
-//            logger.d("test====PSAM2 failed");
-//            return false;
-//        }
-//        return true;
     }
 
 
@@ -125,41 +115,68 @@ public class CardManager {
      * 00D6 01 90 C8 DATA[400-599]
      * ... ...
      */
-    public byte[] updatePhotoInfor(byte[] data) {
-        byte[] random = getRomdon();
-        if (!isNULL(random)) {
-            try {
-                logger.d("random=" + DataConversionUtils.byteArrayToStringLog(random, random.length));
-                //获取3DES加密cbc数据
-                byte[] enc = DesUtils.encryptBy3DesCbc(random, key);
+    public boolean updatePhotoInfor(byte[] or_data) {
+        if (RenZheng((byte) 0x06, (byte) 0x03)) {
 
-                byte[] cmd = {0x00, (byte) 0x82, 0x00, 0x01, 0x08};
-                if (!isNULL(enc)) {
-                    logger.d("enc=" + DataConversionUtils.byteArrayToStringLog(enc, enc.length));
-                    byte[] finalcmd = new byte[cmd.length + enc.length];
-                    System.arraycopy(cmd, 0, finalcmd, 0, cmd.length);
-                    System.arraycopy(enc, 0, finalcmd, cmd.length, enc.length);
-                    logger.d("renzheng send>" + DataConversionUtils.byteArrayToStringLog(finalcmd, finalcmd.length));
-                    byte[] renzheng = psam.WriteCmd(finalcmd, IPsam.PowerType.Psam2);
-                    logger.d("renzheng rece>" + DataConversionUtils.byteArrayToStringLog(renzheng, renzheng.length));
-                    if (renzheng.length >= 2 && renzheng[0] == 0x90 && renzheng[1] == 0x00) {
-                        return psam.WriteCmd(new byte[]{0x00, (byte) 0xb0, (byte) 0x85, 0x00, 0x40}, IPsam.PowerType.Psam2);
+//            byte[] len=new byte[2];
+            byte[] len = DataConversionUtils.intToByteArray1(or_data.length);
+            byte[] data = new byte[or_data.length + 2];
+//            System.arraycopy(len,0,data,0,2);
+            data[0] = len[1];
+            data[1] = len[0];
+            System.arraycopy(or_data, 0, data, 2, or_data.length);
+            int cecle = (data.length) / 200;
+            int yushu = (data.length) % 200;
+            logger.d("cecle=" + cecle);
+            try {
+                for (int i = 0; i < cecle; i++) {
+                    int offset = 0xc8 * i;
+                    byte[] temp1 = DataConversionUtils.intToByteArray1(offset);
+                    logger.d(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
+                    byte[] bytes1 = new byte[0];
+
+                    int i1 = cecle - i;
+                    logger.d("daoshu=" + i1);
+                    if (i1 >= 2) {
+                        bytes1 = new byte[205];
+                        bytes1[0] = 0x00;
+                        bytes1[1] = (byte) 0xd6;
+                        bytes1[2] = temp1[1];
+                        bytes1[3] = temp1[0];
+                        bytes1[4] = (byte) 0xc8;
+                        System.arraycopy(data, offset, bytes1, 5, 200);
                     }
-                    return renzheng;
-                } else {
-                    return null;
+                    logger.d("updatephoto send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                    byte[] result = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                    if (!isNULL(result))
+                        logger.d("updatephoto len=" + result.length + "   " + DataConversionUtils.byteArrayToStringLog(result, result.length));
+                    SystemClock.sleep(10);
                 }
-            } catch (GeneralSecurityException e) {
-                e.printStackTrace();
-                return null;
+//                return true;
+
+                if (yushu > 0) {
+                    byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 * cecle);
+                    byte[] temp = new byte[yushu + 5];
+                    temp[0] = 0x00;
+                    temp[1] = (byte) 0xd6;
+                    temp[2] = temp1[1];
+                    temp[3] = temp1[0];
+                    temp[4] = (byte) yushu;
+                    System.arraycopy(data, 0xc8 * cecle, temp, 5, yushu);
+                    logger.d("updatephoto send>" + DataConversionUtils.byteArrayToStringLog(temp, temp.length));
+                    byte[] result = psam.WriteCmd(temp, IPsam.PowerType.Psam2);
+                    if (!isNULL(result))
+                        logger.d("updatephoto len=" + result.length + "   " + DataConversionUtils.byteArrayToStringLog(result, result.length));
+
+                    SystemClock.sleep(10);
+                }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
-                return null;
+                return false;
             }
-
-        } else {
-            return null;
+            return true;
         }
+        return false;
     }
 
 
@@ -175,33 +192,68 @@ public class CardManager {
      * ... ...
      */
     public byte[] getPhotoData() {
-        byte[] result = new byte[2048];
+        byte[] result = new byte[0];//= new byte[2048];
         if (RenZheng((byte) 0x06, (byte) 0x04)) {
-            byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0xC8};
+            byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0x02};
 //            logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
             byte[] bytes = new byte[0];
-            int cecle = result.length / 200;
-            int yushu = result.length % 200;
-            if (yushu != 0)
-                cecle = cecle+1;
-            for (int i = 0; i < cecle; i++) {
-                byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 + 0xc8 * i);
-                logger.d(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
-//                byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 + 0xc8 * i);
-//                logger.d("zhuanhuan="+DataConversionUtils.byteArrayToStringLog(temp1,temp1.length));
-                bytes1[3]=temp1[1];
-                bytes1[4]=temp1[0];
-                try {
-                    logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
 
-                    bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+            try {
+                logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                if (!isNULL(bytes)) {
+                    logger.d("getPhotoDatalen =" + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                    int pic_len = DataConversionUtils.byteArrayToInt(new byte[]{bytes[0], bytes[1]});
+                    result = new byte[pic_len];
+                    //去掉前两个字节（长度） 和后面的9000
+//                    System.arraycopy(bytes, 2, result, 0, 198);
+                    logger.d("pic_len=" + pic_len);
+                    int cecle = (pic_len) / 200;
+                    int yushu = (pic_len) % 200;
+
+                    for (int i = 0; i < cecle; i++) {
+                        byte[] temp1 = DataConversionUtils.intToByteArray1((0xc8 * i) + 2);
+                        logger.d(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
+                        if (i == 0) {
+                            bytes1[2] = 0x00;
+                            bytes1[3] = 0x00;
+                        }
+
+                        bytes1[2] = temp1[1];
+                        bytes1[3] = temp1[0];
+                        bytes1[4] = (byte) 0xc8;
+
+                        logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                        bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                        logger.d("getPhotoDatalen=i=" + i + " " + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                        System.arraycopy(bytes, 0, result, 200 * i, 200);
+                    }
+                    // 取余数数据
+                    if (yushu > 0) {
+                        byte[] temp1 = DataConversionUtils.intToByteArray1((0xc8 * cecle) + 2);
+                        bytes1[2] = temp1[1];
+                        bytes1[3] = temp1[0];
+                        bytes1[4] = (byte) yushu;
+                        logger.d("get yuxia send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                        bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                        logger.d("getPhotoDatalen last=" + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                        System.arraycopy(bytes, 0, result, (0xc8 * cecle), bytes.length - 2);
+                    }
                 }
-                logger.d("getPhotoDatalen="+bytes.length+"   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
+//            bytes1[2] = 0x00;
+//            bytes1[3] = (byte) 0xbe;
+//            bytes1[4] = (byte) 0xc8;
+//            try {
+//                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+//                logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
 
-            return bytes;
+            return result;
         } else {
             return null;
         }
@@ -235,6 +287,8 @@ public class CardManager {
                     System.arraycopy(enc, 0, finalcmd, cmd.length, enc.length);
                     logger.d("renzheng send>" + DataConversionUtils.byteArrayToStringLog(finalcmd, finalcmd.length));
                     byte[] renzheng = psam.WriteCmd(finalcmd, IPsam.PowerType.Psam2);
+                    if (isNULL(renzheng))
+                        return false;
                     logger.d("renzheng rece>" + DataConversionUtils.byteArrayToStringLog(renzheng, renzheng.length));
                     if (renzheng.length >= 2 && renzheng[0] == (byte) 0x90 && renzheng[1] == (byte) 0x00) {
                         return true;
@@ -283,16 +337,151 @@ public class CardManager {
     }
 
 
+
     /**
      * 获取指纹信息
-     *
-     * @return byte[]
+     * @param order
+     * @return
      */
-    public byte[] getFingerData(int order) {
+    public byte[] getFingerData(byte order) {
 
 
-        return null;
+        byte[] result = new byte[0];
+        if (RenZheng((byte) order, (byte) 0x04)) {
+            byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0x02};
+//            logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+            byte[] bytes = new byte[0];
+
+            try {
+                logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                if (!isNULL(bytes)) {
+                    logger.d("getFingerDatalen =" + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                    int pic_len = DataConversionUtils.byteArrayToInt(new byte[]{bytes[0], bytes[1]});
+                    result = new byte[pic_len];
+                    //去掉前两个字节（长度） 和后面的9000
+//                    System.arraycopy(bytes, 2, result, 0, 198);
+                    logger.d("getFingerDatalen=" + pic_len);
+                    int cecle = (pic_len) / 200;
+                    int yushu = (pic_len) % 200;
+
+                    for (int i = 0; i < cecle; i++) {
+                        byte[] temp1 = DataConversionUtils.intToByteArray1((0xc8 * i) + 2);
+                        logger.d(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
+                        if (i == 0) {
+                            bytes1[2] = 0x00;
+                            bytes1[3] = 0x00;
+                        }
+
+                        bytes1[2] = temp1[1];
+                        bytes1[3] = temp1[0];
+                        bytes1[4] = (byte) 0xc8;
+
+                        logger.d("send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                        bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                        logger.d("getFingerDatalen=i=" + i + " " + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                        System.arraycopy(bytes, 0, result, 200 * i, 200);
+                    }
+                    // 取余数数据
+                    if (yushu > 0) {
+                        byte[] temp1 = DataConversionUtils.intToByteArray1((0xc8 * cecle) + 2);
+                        bytes1[2] = temp1[1];
+                        bytes1[3] = temp1[0];
+                        bytes1[4] = (byte) yushu;
+                        logger.d("get yuxia send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                        bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                        logger.d("getFingerDatalen last=" + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                        System.arraycopy(bytes, 0, result, (0xc8 * cecle), bytes.length - 2);
+                    }
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+
+            return result;
+        } else {
+            return null;
+        }
     }
+    /**
+     * 指纹信息更新流程:
+     * 获取随机数 RNG:0084000008
+     * 外部认证 DACK3:0082 0001 08 ENC(RNG，DACK3)
+     * 更新文件:(单次更新 200 字节，直到 2048/1024 字节更新完毕)
+     * 00A4 00 00 02 [0007-0010]
+     * 00D6 00 00 C8 DATA[0-199]
+     * 00D6 00 C8 C8 DATA[200-399]
+     * 00D6 01 90 C8 DATA[400-599]
+     * ... ...
+     */
+    /**
+     *
+     * @param finger_data 指纹数据
+     * @param order  0x07~0x10
+     * @return boolean
+     */
+    public boolean updateFinger(byte[] finger_data,byte order) {
+        if (RenZheng(order, (byte) 0x03)) {
 
+//            byte[] len=new byte[2];
+            byte[] len = DataConversionUtils.intToByteArray1(finger_data.length);
+            byte[] data = new byte[finger_data.length + 2];
+//            System.arraycopy(len,0,data,0,2);
+            data[0] = len[1];
+            data[1] = len[0];
+            System.arraycopy(finger_data, 0, data, 2, finger_data.length);
+            int cecle = (data.length) / 200;
+            int yushu = (data.length) % 200;
+            logger.d("cecle=" + cecle);
+            try {
+                for (int i = 0; i < cecle; i++) {
+                    int offset = 0xc8 * i;
+                    byte[] temp1 = DataConversionUtils.intToByteArray1(offset);
+                    logger.d(DataConversionUtils.byteArrayToStringLog(temp1, temp1.length));
+                    byte[] bytes1 = new byte[0];
+
+                    int i1 = cecle - i;
+//                    logger.d("daoshu=" + i1);
+                    if (i1 >= 2) {
+                        bytes1 = new byte[205];
+                        bytes1[0] = 0x00;
+                        bytes1[1] = (byte) 0xd6;
+                        bytes1[2] = temp1[1];
+                        bytes1[3] = temp1[0];
+                        bytes1[4] = (byte) 0xc8;
+                        System.arraycopy(data, offset, bytes1, 5, 200);
+                    }
+                    logger.d("updatefinger send>" + DataConversionUtils.byteArrayToStringLog(bytes1, bytes1.length));
+                    byte[] result = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                    if (!isNULL(result))
+                        logger.d("updatefinger len=" + result.length + "   " + DataConversionUtils.byteArrayToStringLog(result, result.length));
+                    SystemClock.sleep(10);
+                }
+//                return true;
+
+                if (yushu > 0) {
+                    byte[] temp1 = DataConversionUtils.intToByteArray1(0xc8 * cecle);
+                    byte[] temp = new byte[yushu + 5];
+                    temp[0] = 0x00;
+                    temp[1] = (byte) 0xd6;
+                    temp[2] = temp1[1];
+                    temp[3] = temp1[0];
+                    temp[4] = (byte) yushu;
+                    System.arraycopy(data, 0xc8 * cecle, temp, 5, yushu);
+                    logger.d("updatephoto send>" + DataConversionUtils.byteArrayToStringLog(temp, temp.length));
+                    byte[] result = psam.WriteCmd(temp, IPsam.PowerType.Psam2);
+                    if (!isNULL(result))
+                        logger.d("updatephoto len=" + result.length + "   " + DataConversionUtils.byteArrayToStringLog(result, result.length));
+
+                    SystemClock.sleep(10);
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 
 }
