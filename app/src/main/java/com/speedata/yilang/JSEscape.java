@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
 public class JSEscape {
-    public static final String FZ = "方正宋体-人口信息";//"方正宋体-人口信息";
+//    public static final String FZ = "方正宋体-人口信息";//"方正宋体-人口信息";
     private static String hexString = "0123456789ABCDEF";
     private static String[] hex = {"00", "01", "02", "03", "04", "05", "06",
             "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F", "10", "11",
@@ -143,19 +143,19 @@ public class JSEscape {
         return sbuf.toString();
     }
 
-    public String toFZ(String str) throws UnsupportedEncodingException {
-        return this.changeCharset(str, FZ);
-    }
-
-    private String changeCharset(String str, String fz2) throws UnsupportedEncodingException {
-        if (str != null) {
-            //用默认字符编码解码字符串。
-            byte[] bs = str.getBytes();
-            //用新的字符编码生成字符串
-            return new String(bs, FZ);
-        }
-        return null;
-    }
+//    public String toFZ(String str) throws UnsupportedEncodingException {
+//        return this.changeCharset(str, FZ);
+//    }
+//
+//    private String changeCharset(String str, String fz2) throws UnsupportedEncodingException {
+//        if (str != null) {
+//            //用默认字符编码解码字符串。
+//            byte[] bs = str.getBytes();
+//            //用新的字符编码生成字符串
+//            return new String(bs, FZ);
+//        }
+//        return null;
+//    }
 
     public static void main(String[] args) throws UnsupportedEncodingException {
         String stest = "%u4EFB%u9759%u5982";
