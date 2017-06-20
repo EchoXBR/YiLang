@@ -29,7 +29,7 @@ import java.text.DecimalFormat;
  */
 public class VerifyActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnRead, btnComparison;
+    private Button btnRead;
     private CardManager cardManager = new CardManager();
     private ImageView imgPhoto;
     private TextView tvUserInfor;
@@ -38,6 +38,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     private DeviceControl deviceControl;
     private DeviceControl deviceControl2;
     private Fmd fingerFmd1, fingerFmd2;
+    private Button btnComparison;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,5 +162,6 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         super.onDestroy();
         cardManager.realsePsam();
         tcs1GRealize.closeReader();
+        System.out.print("onDestroy");
     }
 }
