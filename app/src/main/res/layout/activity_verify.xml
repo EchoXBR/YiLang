@@ -6,45 +6,65 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.speedata.yilang.VerifyActivity">
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="用户信息"
         android:layout_marginTop="10dp"
-        android:textSize="20dp"/>
+        android:text="用户信息"
+        android:textSize="20dp" />
+
     <TextView
         android:id="@+id/tv_user_infor"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="30dp"
-        android:text="XXXXX"/>
+        android:text="XXXXX"
+        android:textSize="30dp" />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="照片信息"
-
         android:layout_marginTop="40dp"
-        android:textSize="20dp"
-        />
+
+        android:text="照片信息"
+        android:textSize="20dp" />
+
     <ImageView
+        android:id="@+id/img_photo"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginTop="10dp"
         android:layout_weight="1"
-        android:id="@+id/img_photo"
-        android:layout_gravity="center_horizontal"
-        android:src="@mipmap/icon_default_user"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="读卡"
-        android:layout_marginTop="10dp"
+        android:src="@mipmap/icon_default_user" />
 
-        android:id="@+id/btn_read_card"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_read_card"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+
+            android:text="读卡" />
+
+        <Button
+            android:id="@+id/btn_Comparisons"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+
+            android:text="验证" />
+    </LinearLayout>
 
 
 </LinearLayout>
