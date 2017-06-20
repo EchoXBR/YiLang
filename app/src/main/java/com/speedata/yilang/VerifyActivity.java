@@ -7,7 +7,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.speedata.libutils.DataConversionUtils;
+import com.speedata.libutils.MyLogger;
 import com.speedata.utils.ProgressDialogUtils;
 
 /**
@@ -20,6 +23,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     private ImageView imgPhoto;
     private TextView tvUserInfor;
     private byte[] fingerData;//指纹缓存数据
+    private MyLogger logger=MyLogger.jLog();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +31,13 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_verify);
         btnRead = (Button) findViewById(R.id.btn_read_card);
         btnRead.setOnClickListener(this);
-        cardManager.initPsam(this);
+        boolean result=cardManager.initPsam(this);
+        if(result)
+            Toast.makeText(this,"初始化成功",Toast.LENGTH_LONG).show();
+        else {
+            Toast.makeText(this, "初始化失败", Toast.LENGTH_LONG).show();
+            finish();
+        }
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
         tvUserInfor = (TextView) findViewById(R.id.tv_user_infor);
     }
@@ -40,7 +50,9 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    final Bitmap bitmap = CardParse.PaseBitmap(cardManager.getPhotoData());
+                    byte[] photoData = cardManager.getPhotoData();
+                    logger.d("photoData="+ DataConversionUtils.byteArrayToStringLog(photoData,photoData.length));
+                    final Bitmap bitmap = CardParse.PaseBitmap(photoData);
                     final UserInfor userInfor = CardParse.PaseUserInfor(cardManager.getUserInfor());
                     //注册的哪个文件就读哪个文件
                     fingerData = cardManager.getFingerData((byte) 0x07);
@@ -49,7 +61,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                         public void run() {
                             ProgressDialogUtils.dismissProgressDialog();
                             imgPhoto.setImageBitmap(bitmap);
-                            tvUserInfor.setText(userInfor.getName());
+                            tvUserInfor.setText(userInfor.getName().replace("Q",""));
                         }
                     });
 
