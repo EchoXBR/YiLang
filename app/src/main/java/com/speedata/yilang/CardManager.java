@@ -92,10 +92,9 @@ public class CardManager {
             bytes[3] = 0x00;
             bytes[4] = 0x40;
             try {
-                bytes = psam.WriteCmd(bytes, IPsam.PowerType.Psam2);
                 logger.d("updateUserInfor send> " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                bytes = psam.WriteCmd(bytes, IPsam.PowerType.Psam2);
             } catch (UnsupportedEncodingException e) {
-
                 e.printStackTrace();
                 return false;
             }
@@ -108,8 +107,6 @@ public class CardManager {
                 return true;
             }
             return false;
-
-
         } else {
             return false;
         }

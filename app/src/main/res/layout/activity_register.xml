@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.speedata.yilang.RegisterActivity">
+
+
+    <EditText
+        android:id="@+id/edv_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@mipmap/icon_username"
+        android:text="许百茹"
+        android:maxLength="6" />
+
+    <RadioGroup
+        android:layout_width="fill_parent"
+        android:id="@+id/radioGroup"
+        android:layout_height="wrap_content"
+        android:contentDescription="性别">
+
+        <RadioButton
+
+            android:id="@+id/radio_nan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="男" />
+
+        <RadioButton
+            android:id="@+id/radio_nv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="女" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/radio_photo"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="选择照片"
+        android:contextClickable="true">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="张三" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="李四" />
+    </RadioGroup>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+        <ImageView
+            android:src="@mipmap/icon_default_user"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:id="@+id/img_photo"
+
+            android:layout_gravity="center"
+            android:layout_height="wrap_content" />
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:id="@+id/imbtn_get_photo"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_take_photo" />
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="注册"/>
+</LinearLayout>
