@@ -51,6 +51,7 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
         }
         Log.i(TAG, "openReader");
         cardManager = new CardManager();
+        cardManager.initPsam(this);
         initGui();
     }
 
@@ -70,7 +71,7 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
         tvMsg = (TextView) findViewById(R.id.tv_msg);
         btnEnrollment.setOnClickListener(this);
         btnOpen.setOnClickListener(this);
-//        cardManager.initPsam(this);
+
     }
 
     Handler handler = new Handler() {
@@ -104,6 +105,7 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
                     cardManager.updateFinger(fingerTemplebytes, (byte) 0x07);//更新指纹特征函数到卡片
 //                    Intent intent = new Intent(RegisterFingerActivity.this, VerifyActivity.class);
 //                    startActivity(intent);
+                    finish();
                     tvMsg.setText("Enrollment Success");
                     break;
             }

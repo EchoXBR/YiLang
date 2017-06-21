@@ -39,34 +39,31 @@
         android:layout_marginLeft="40dp"
         android:layout_marginRight="40dp"
         android:layout_marginTop="10dp"
-        android:layout_weight="1"
+        android:layout_weight="9"
         android:src="@mipmap/icon_default_user" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_read_card"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/verify_read_card" />
 
         <Button
             android:id="@+id/btn_Comparisons"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/btn_verify" />
         <Button
             android:id="@+id/btn_Enrolment"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/btn_zhuce" />
     </LinearLayout>

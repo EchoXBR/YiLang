@@ -5,8 +5,9 @@
     <string name="verify_user_info">用户信息:</string>
     <string name="verify_photo">照片:</string>
     <string name="verify_read_card">读卡</string>
-    <string name="btn_verify">验证</string>
+    <string name="btn_verify">验证指纹</string>
     <string name="btn_zhuce">注册</string>
+    <string name="btn_zhuce_finger">注册指纹</string>
     <string name="btn_open">打开</string>
 
     <string name="verify_reading_card">正在读卡</string>

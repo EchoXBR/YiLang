@@ -138,8 +138,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         public void run() {
                             if (result1 && result2) {
                                 Toast.makeText(RegisterActivity.this, getString(R.string.updata_success), Toast.LENGTH_LONG).show();
-//                                Intent intent = new Intent(RegisterActivity.this, RegisterFingerActivity.class);
-//                                startActivity(intent);
+                                Intent intent = new Intent(RegisterActivity.this, RegisterFingerActivity.class);
+                                startActivity(intent);
                             }
                             ProgressDialogUtils.dismissProgressDialog();
                         }

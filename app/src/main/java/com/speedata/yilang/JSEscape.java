@@ -2,13 +2,11 @@ package com.speedata.yilang;
 
 //import java.awt.Font;
 
-import com.speedata.libutils.DataConversionUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
 public class JSEscape {
-//    public static final String FZ = "方正宋体-人口信息";//"方正宋体-人口信息";
+    //    public static final String FZ = "方正宋体-人口信息";//"方正宋体-人口信息";
     private static String hexString = "0123456789ABCDEF";
     private static String[] hex = {"00", "01", "02", "03", "04", "05", "06",
             "07", "08", "09", "0A", "0B", "0C", "0D", "0E", "0F", "10", "11",
@@ -181,10 +179,12 @@ public class JSEscape {
 //	        System.out.println(unescape("%7B%27id%27%3A1%2C%27parentId%27%3A2%2C%27name%27%3A%27%u6D4B%u8BD5%u6837%u4F8B%27%2C%27dataSource%27%3A%2720%27%2C%27path%27%3A%272/1.rep%27%7D"));
 //	        System.out.println(escape("{'id':1,'parentId':2,'name':'测试样例','dataSource':'20','path':'2/1.rep'}"));
     }
-    public static byte[] getNameByte(String name){
+
+    public static byte[] getNameByte(String name) {
         return escape(name).getBytes();
     }
-    public static String parseName(byte[] name){
+
+    public static String parseName(byte[] name) {
         return unescape(new String(name));
     }
 
