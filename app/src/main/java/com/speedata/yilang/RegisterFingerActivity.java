@@ -1,18 +1,16 @@
 package com.speedata.yilang;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.serialport.DeviceControl;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.digitalpersona.uareu.Fmd;
 import com.mylibrary.realize.TCS1GRealize;
@@ -23,10 +21,10 @@ import java.io.IOException;
  * TODO 指纹注册
  */
 public class RegisterFingerActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btnEnrollment ,btnOpen;
+    private Button btnEnrollment, btnOpen;
     private TextView tvMsg;
     private ImageView imageView;
-    private TCS1GRealize tcs1GRealize;
+    private TCS1GRealize tcs1GRealize = null;
     private byte[] fingerTemplebytes;
     private CardManager cardManager = null;
     private DeviceControl deviceControl;
@@ -37,17 +35,32 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_finger);
+//        getActionBar().setTitle("Enrollment FingerPrint");
         try {
             deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 63);
             deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
             deviceControl.PowerOnDevice();
             deviceControl2.PowerOnDevice();
-            SystemClock.sleep(200);
+//            SystemClock.sleep(200);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        tcs1GRealize = new TCS1GRealize(RegisterFingerActivity.this, RegisterFingerActivity.this, handler);
+        if (tcs1GRealize != null) {
+            tcs1GRealize.openReader();
+        }
+        Log.i(TAG, "openReader");
+        cardManager = new CardManager();
         initGui();
+    }
+
+    String TAG = "finger";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+
     }
 
     private void initGui() {
@@ -57,13 +70,9 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
         tvMsg = (TextView) findViewById(R.id.tv_msg);
         btnEnrollment.setOnClickListener(this);
         btnOpen.setOnClickListener(this);
-        tcs1GRealize = new TCS1GRealize(RegisterFingerActivity.this, RegisterFingerActivity.this, handler);
-        tcs1GRealize.openReader();
-        cardManager = new CardManager();
-        cardManager.initPsam(this);
+//        cardManager.initPsam(this);
     }
 
-    boolean template = true;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -74,10 +83,11 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
                     break;
                 case 1:
                     if ((Boolean) msg.obj) {
-                        tvMsg.setText("指纹初始成功");
+                        tvMsg.setText("Init success ");
                     } else {
-                        tvMsg.setText("指纹初始失败，重新初始中");
+//                        tvMsg.setText("指纹初始失败，重新初始中");
                         tcs1GRealize.openReader();
+                        Log.i(TAG, "@@@@@  openReader");
                     }
                     break;
                 case 3:
@@ -91,12 +101,10 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
                 case 5:
                     Fmd fmd1 = (Fmd) msg.obj;
                     fingerTemplebytes = fmd1.getData();//获取指纹特征函数
-                    tcs1GRealize.onBackPressed();
-                    tvMsg.setText("指纹注册成功");
                     cardManager.updateFinger(fingerTemplebytes, (byte) 0x07);//更新指纹特征函数到卡片
-                    Toast.makeText(RegisterFingerActivity.this, "指纹注册成功", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterFingerActivity.this, VerifyActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(RegisterFingerActivity.this, VerifyActivity.class);
+//                    startActivity(intent);
+                    tvMsg.setText("Enrollment Success");
                     break;
             }
         }
@@ -105,23 +113,33 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         if (v == btnEnrollment) {
-            tcs1GRealize.enrollment();
-        } else if (v==btnOpen) {
+            tcs1GRealize.createTemplate();
+        } else if (v == btnOpen) {
             tcs1GRealize.openReader();
         }
 
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        tcs1GRealize.closeReader();
-//        try {
-//            deviceControl.PowerOffDevice();
-//            ;
-//            deviceControl2.PowerOffDevice();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
+        Log.i(TAG, "onDestroy: ");
+        if (tcs1GRealize != null) {
+            tcs1GRealize.closeReader();
+        }
+        try {
+            deviceControl.PowerOffDevice();
+            deviceControl2.PowerOffDevice();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

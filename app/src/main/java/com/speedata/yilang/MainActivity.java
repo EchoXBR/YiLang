@@ -42,15 +42,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imageView = (ImageView) findViewById(R.id.img_test);
 
         if (!cardManager.initPsam(this)) {
-            Toast.makeText(this, "初始化失败", Toast.LENGTH_SHORT).show();
-            tvTimes.setText("初始化失败");
+            Toast.makeText(this, getString(R.string.init_faild), Toast.LENGTH_SHORT).show();
+            tvTimes.setText( getString(R.string.init_faild));
             return;
         }
 
         btnTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProgressDialogUtils.showProgressDialog(MainActivity.this, "请稍后");
+                ProgressDialogUtils.showProgressDialog(MainActivity.this, getString(R.string.please_wait));
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //测试写入用户信息
         byte[] temp = new byte[64];
         cardManager.updateUserInfor(temp);
-        String name = "许百茹";
+        String name = "Jack";
         byte[] name_byte = JSEscape.getNameByte(name);
 //                            logger.d("name name_byte=" + DataConversionUtils.byteArrayToStringLog(name_byte, name_byte.length));
         if (name_byte.length < 64) {

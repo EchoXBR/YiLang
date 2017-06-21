@@ -14,17 +14,20 @@
 
     <Button
         android:id="@+id/btn_open"
-        android:text="打开"
-        android:layout_width="wrap_content"
+        android:text="@string/btn_open"
+        android:visibility="gone"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/btn_zhuce"
-        android:text="注册"
-        android:layout_width="wrap_content"
+        android:text="@string/btn_zhuce"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <ImageView
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:id="@+id/image"/>
 
 

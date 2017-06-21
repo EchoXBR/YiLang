@@ -13,43 +13,43 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:drawableLeft="@mipmap/icon_username"
-        android:text="鹿晗"
-        android:maxLength="6" />
+        android:maxLength="6"
+        android:text="Jack" />
 
     <RadioGroup
         android:layout_width="fill_parent"
         android:id="@+id/radioGroup"
         android:layout_height="wrap_content"
-        android:contentDescription="性别">
+        android:contentDescription="@string/gender">
 
         <RadioButton
 
             android:id="@+id/radio_nan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="男" />
+            android:text="Man" />
 
         <RadioButton
             android:id="@+id/radio_nv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="女" />
+            android:text="Ms" />
     </RadioGroup>
 
     <RadioGroup
         android:id="@+id/radio_photo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="选择照片"
+        android:contentDescription="@string/choose_photo"
         android:contextClickable="true">
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="张三" />
+            android:text="Joan" />
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="李四" />
+            android:text="Tom" />
     </RadioGroup>
     <LinearLayout
         android:layout_width="fill_parent"
@@ -79,5 +79,5 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="注册"/>
+        android:text="@string/btn_zhuce"/>
 </LinearLayout>

@@ -81,12 +81,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 String name = rb.getText().toString();
 
                 switch (name) {
-                    case "张三":
+                    case "Joan":
                         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_1);
                         resPhotoID = R.mipmap.photo_1;
                         imgPhoto.setImageBitmap(bitmap);
                         break;
-                    case "李四":
+                    case "Tom":
                         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_3);
                         resPhotoID = R.mipmap.photo_3;
                         imgPhoto.setImageBitmap(bitmap);
@@ -107,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         if (v == btnRegister) {
             //TODO 用户信息写入卡中
-            ProgressDialogUtils.showProgressDialog(RegisterActivity.this, "正在更新");
+            ProgressDialogUtils.showProgressDialog(RegisterActivity.this, getString(R.string.updata));
 
             new Thread(new Runnable() {
                 @Override
@@ -117,7 +117,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(RegisterActivity.this, "请输入有效信息", Toast.LENGTH_LONG).show();
+                                Toast.makeText(RegisterActivity.this, getString(R.string.input_info), Toast.LENGTH_LONG).show();
 
                             }
                         });
@@ -137,9 +137,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         @Override
                         public void run() {
                             if (result1 && result2) {
-                                Toast.makeText(RegisterActivity.this, "更新成功", Toast.LENGTH_LONG).show();
-                                Intent intent = new Intent(RegisterActivity.this, RegisterFingerActivity.class);
-                                startActivity(intent);
+                                Toast.makeText(RegisterActivity.this, getString(R.string.updata_success), Toast.LENGTH_LONG).show();
+//                                Intent intent = new Intent(RegisterActivity.this, RegisterFingerActivity.class);
+//                                startActivity(intent);
                             }
                             ProgressDialogUtils.dismissProgressDialog();
                         }

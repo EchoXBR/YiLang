@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">YiLang</string>
+
+    <string name="verify_user_info">User Info:</string>
+    <string name="verify_photo">Photo:</string>
+    <string name="verify_read_card">Read Card</string>
+    <string name="btn_verify">Verify</string>
+    <string name="btn_zhuce">Enrolment</string>
+    <string name="btn_open">Open Reader</string>
+    <string name="verify_reading_card">Read Card...</string>
+
+    <string name="init_faild">Init Faile</string>
+    <string name="init_success">Init Success</string>
+    <string name="please_wait">Loading...</string>
+    <string name="gender">Gender</string>
+    <string name="choose_photo">Choose A Photo</string>
+    <string name="updata">Write Card...</string>
+    <string name="updata_success">Updating Success</string>
+    <string name="input_info">Please enter valid information</string>
 </resources>

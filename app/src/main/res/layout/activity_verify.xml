@@ -11,7 +11,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="用户信息"
+        android:text="@string/verify_user_info"
         android:textSize="20dp" />
 
     <TextView
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
 
-        android:text="照片信息"
+        android:text="@string/verify_photo"
         android:textSize="20dp" />
 
     <ImageView
@@ -53,8 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-
-            android:text="读卡" />
+            android:text="@string/verify_read_card" />
 
         <Button
             android:id="@+id/btn_Comparisons"
@@ -62,8 +61,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_weight="1"
-
-            android:text="验证" />
+            android:text="@string/btn_verify" />
+        <Button
+            android:id="@+id/btn_Enrolment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:text="@string/btn_zhuce" />
     </LinearLayout>
 
 

@@ -2,6 +2,7 @@ package com.speedata.yilang;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import com.digitalpersona.uareu.Fmd;
 import com.digitalpersona.uareu.UareUException;
 import com.digitalpersona.uareu.dpfj.ImporterImpl;
 import com.mylibrary.realize.TCS1GRealize;
+import com.speedata.utils.PlaySoundPool;
 import com.speedata.utils.ProgressDialogUtils;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ import java.text.DecimalFormat;
  */
 public class VerifyActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btnRead;
+    private Button btnRead, btnEnrolment;
     private CardManager cardManager = new CardManager();
     private ImageView imgPhoto;
     private TextView tvUserInfor;
@@ -37,13 +39,21 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     private TCS1GRealize tcs1GRealize = null;
     private DeviceControl deviceControl;
     private DeviceControl deviceControl2;
-    private Fmd fingerFmd1, fingerFmd2;
+    private Fmd fingerFmd1 = null;
+    private Fmd fingerFmd2 = null;
+
     private Button btnComparison;
+    private DialogShow dialogShow;
+    private PlaySoundPool playSoundPool;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
+
+//        getActionBar().setTitle("Verify Info");
+        btnEnrolment = (Button) findViewById(R.id.btn_Enrolment);
+        btnEnrolment.setOnClickListener(this);
         btnRead = (Button) findViewById(R.id.btn_read_card);
         btnRead.setOnClickListener(this);
         cardManager.initPsam(this);
@@ -51,6 +61,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         tvUserInfor = (TextView) findViewById(R.id.tv_user_infor);
         btnComparison = (Button) findViewById(R.id.btn_Comparisons);
         btnComparison.setOnClickListener(this);
+        playSoundPool = PlaySoundPool.getPlaySoundPool(VerifyActivity.this);
         try {
             deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 63);
             deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
@@ -62,7 +73,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         tcs1GRealize = new TCS1GRealize(VerifyActivity.this, VerifyActivity.this, handler);
 
         tcs1GRealize.openReader();//打开指纹寻找reader
-
+        dialogShow = new DialogShow(this);
 
     }
 
@@ -76,10 +87,10 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                     break;
                 case 1:
                     if ((Boolean) msg.obj) {
-                        Toast.makeText(VerifyActivity.this, "指纹初始成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(VerifyActivity.this, "Init Success", Toast.LENGTH_SHORT).show();
                     } else {
                         tcs1GRealize.openReader();
-                        Toast.makeText(VerifyActivity.this, "指纹初始失败，重新初始中", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(VerifyActivity.this, "指纹初始失败，重新初始中", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case 5:
@@ -96,9 +107,15 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                             " (" + (mScore < (0x7FFFFFFF / 100000) ? "match" : "no match") + ")";
                     Log.i("result", comparison);
                     if (mScore < (0x7FFFFFFF / 100000)) {
-                        dialog("通过验证");
+//                        dialog("通过验证");
+
+                        playSoundPool.playLaser();
+                        dialogShow.DialogShow(R.drawable.pass);
                     } else {
-                        dialog("验证失败");
+
+                        dialogShow.DialogShow(R.drawable.fail);
+                        playSoundPool.playError();
+//                        dialog("验证失败");
                     }
                     break;
             }
@@ -107,7 +124,8 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
 
     protected void dialog(String s) {
         AlertDialog.Builder builder = new AlertDialog.Builder(VerifyActivity.this);
-        builder.setMessage(s);
+//        builder.setMessage(s);
+        builder.setIcon(R.drawable.pass);
         builder.setTitle("验证结果");
         builder.setPositiveButton("", new DialogInterface.OnClickListener() {
             @Override
@@ -122,7 +140,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         if (v == btnRead) {
             //TODO 读卡
-            ProgressDialogUtils.showProgressDialog(VerifyActivity.this, "正在读卡");
+            ProgressDialogUtils.showProgressDialog(VerifyActivity.this, getString(R.string.verify_reading_card));
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -146,6 +164,10 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                             ProgressDialogUtils.dismissProgressDialog();
                             imgPhoto.setImageBitmap(bitmap);
                             tvUserInfor.setText(userInfor.getName());
+                            if (fingerData == null && bitmap == null && userInfor == null) {
+                                btnEnrolment.setVisibility(View.VISIBLE);
+                                ProgressDialogUtils.dismissProgressDialog();
+                            }
                         }
                     });
 
@@ -154,6 +176,9 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
 
         } else if (v == btnComparison) {
             tcs1GRealize.createTemplate();
+        } else if (v==btnEnrolment) {
+            Intent intent = new Intent(VerifyActivity.this, RegisterActivity.class);
+            startActivity(intent);
         }
     }
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">伊朗</string>
+
+    <string name="verify_user_info">用户信息:</string>
+    <string name="verify_photo">照片:</string>
+    <string name="verify_read_card">读卡</string>
+    <string name="btn_verify">验证</string>
+    <string name="btn_zhuce">注册</string>
+    <string name="btn_open">打开</string>
+
+    <string name="verify_reading_card">正在读卡</string>
+    <string name="init_faild">初始化失败</string>
+    <string name="init_success">初始化成功</string>
+    <string name="please_wait">请稍后...</string>
+    <string name="gender">性别</string>
+    <string name="choose_photo">选择照片</string>
+    <string name="updata_success">写卡成功</string>
+    <string name="input_info">请输入有效信息</string>
+
+
+
+</resources>
