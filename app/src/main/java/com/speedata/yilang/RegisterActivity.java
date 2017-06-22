@@ -8,11 +8,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText edvName;
     private ImageButton imageButtonGetPhoto;
     private ImageView imgPhoto;
-    private Button btnRegister,btnClear;
+    private Button btnRegister;
 
     String Sex = "";
 
@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
         edvName = (EditText) findViewById(R.id.edv_name);
         btnRegister = (Button) findViewById(R.id.btn_register);
-        btnClear = (Button) findViewById(R.id.btn_clear);
+
         imageButtonGetPhoto = (ImageButton) findViewById(R.id.imbtn_get_photo);
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
         btnRegister.setOnClickListener(this);
@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         });
         cardManager = new CardManager();
-        cardManager.initPsam(this);
+//        cardManager.initPsam(this);
     }
 
     private int resPhotoID;
@@ -126,13 +126,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         return;
                     }
                     cardManager.updateUserInfor(new byte[64]);
-                    final boolean result1 = cardManager.updateUserInfor(JSEscape.getNameByte(name+","+Sex));
+                    final boolean result1 = cardManager.updateUserInfor(JSEscape.getNameByte(name + "," + Sex));
                     //TODO 更新性别
 
                     Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_1);
 
                     final boolean result2 = cardManager.updatePhotoInfor(
-                            ImgCompress.compressBitmap(ImgCompress.decodeSampledBitmapFromResource(getResources(),resPhotoID,100,100)));
+                            ImgCompress.compressBitmap(ImgCompress.decodeSampledBitmapFromResource(getResources(), resPhotoID, 100, 100)));
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -175,9 +175,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             //开始选择
             startActivityForResult(intent, CHOOSE_PHOTO);
-        } else if (v==btnClear) {
-            cardManager.updateUserInfor(new byte[64]);
-            cardManager.updatePhotoInfor(new byte[1022]);
         }
     }
 
@@ -285,6 +282,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        cardManager.realsePsam();
+//        cardManager.realsePsam();
     }
 }

@@ -51,7 +51,7 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
         }
         Log.i(TAG, "openReader");
         cardManager = new CardManager();
-        cardManager.initPsam(this);
+//        cardManager.initPsam(this);
         initGui();
     }
 
@@ -131,17 +131,6 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        Log.i(TAG, "onDestroy: ");
-        if (tcs1GRealize != null) {
-            tcs1GRealize.closeReader();
-        }
-        try {
-            deviceControl.PowerOffDevice();
-            deviceControl2.PowerOffDevice();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 }

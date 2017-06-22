@@ -30,12 +30,12 @@ import java.text.DecimalFormat;
  * TODO 显示读卡信息  验证指纹
  */
 public class VerifyActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private Button btnRead, btnEnrolment;
+    String TAG = "YANZHENG";
+    private Button btnRead, btnEnrolment, btnClear;
     private CardManager cardManager = new CardManager();
     private ImageView imgPhoto;
     private TextView tvUserInfor;
-    private byte[] fingerData;//指纹缓存数据
+    private byte[] fingerData = new byte[0];//指纹缓存数据
     private TCS1GRealize tcs1GRealize = null;
     private DeviceControl deviceControl;
     private DeviceControl deviceControl2;
@@ -45,6 +45,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     private Button btnComparison;
     private DialogShow dialogShow;
     private PlaySoundPool playSoundPool;
+    private boolean isflag = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,8 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         btnRead = (Button) findViewById(R.id.btn_read_card);
         btnRead.setOnClickListener(this);
         cardManager.initPsam(this);
+        btnClear = (Button) findViewById(R.id.btn_clear);
+        btnClear.setOnClickListener(this);
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
         tvUserInfor = (TextView) findViewById(R.id.tv_user_infor);
         btnComparison = (Button) findViewById(R.id.btn_Comparisons);
@@ -71,10 +74,19 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
         tcs1GRealize = new TCS1GRealize(VerifyActivity.this, VerifyActivity.this, handler);
-
-        tcs1GRealize.openReader();//打开指纹寻找reader
+        if (tcs1GRealize != null) {
+            tcs1GRealize.openReader();//打开指纹寻找reader
+        }
         dialogShow = new DialogShow(this);
+        Log.i(TAG, "onCreate: ");
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fingerFmd1 = null;
+        fingerFmd2 = null;
     }
 
     Handler handler = new Handler() {
@@ -86,7 +98,8 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                     Toast.makeText(VerifyActivity.this, (String) msg.obj, Toast.LENGTH_SHORT).show();
                     break;
                 case 1:
-                    if ((Boolean) msg.obj) {
+                    isflag = (boolean) msg.obj;
+                    if (isflag) {
                         Toast.makeText(VerifyActivity.this, "Init Success", Toast.LENGTH_SHORT).show();
                     } else {
                         tcs1GRealize.openReader();
@@ -148,7 +161,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                     final UserInfor userInfor = CardParse.PaseUserInfor(cardManager.getUserInfor());
                     //注册的哪个文件就读哪个文件
                     fingerData = cardManager.getFingerData((byte) 0x07);
-                    if (fingerData != null) {
+                    if (fingerData.length != 0) {
                         //转回指纹FMD特征
                         ImporterImpl importer = new ImporterImpl();
                         try {
@@ -164,7 +177,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                             ProgressDialogUtils.dismissProgressDialog();
                             imgPhoto.setImageBitmap(bitmap);
                             tvUserInfor.setText(userInfor.getName());
-                            if (fingerData == null && bitmap == null && userInfor == null) {
+                            if (fingerData.length == 0 && bitmap == null && userInfor == null) {
                                 btnEnrolment.setVisibility(View.VISIBLE);
                                 ProgressDialogUtils.dismissProgressDialog();
                             }
@@ -175,10 +188,40 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
             }).start();
 
         } else if (v == btnComparison) {
-            tcs1GRealize.createTemplate();
-        } else if (v==btnEnrolment) {
+            if (isflag) {
+
+                tcs1GRealize.createTemplate();
+            } else {
+                tcs1GRealize.openReader();
+            }
+
+        } else if (v == btnEnrolment) {
             Intent intent = new Intent(VerifyActivity.this, RegisterActivity.class);
             startActivity(intent);
+        } else if (v == btnClear) {
+            ProgressDialogUtils.showProgressDialog(VerifyActivity.this, getString(R.string.cleraing_card));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final boolean b1 = cardManager.updateUserInfor(new byte[64]);
+                    final boolean b2 = cardManager.updatePhotoInfor(new byte[2044]);
+                    final boolean b3 = cardManager.updateFinger(new byte[1022], (byte) 0x07);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (b1 && b2 && b3) {
+                                Toast.makeText(VerifyActivity.this, getString(R.string.clera_card), Toast.LENGTH_SHORT).show();
+                                fingerFmd1 = null;
+                                fingerFmd2 = null;
+                            }
+                            ProgressDialogUtils.dismissProgressDialog();
+//                            finish();
+                        }
+                    });
+
+                }
+            }).start();
+
         }
     }
 
@@ -186,7 +229,16 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
         cardManager.realsePsam();
-        tcs1GRealize.closeReader();
+        if (tcs1GRealize != null) {
+            tcs1GRealize.closeReader();
+        }
         System.out.print("onDestroy");
+        Log.i(TAG, "onDestroy: ");
+        try {
+            deviceControl.PowerOffDevice();
+            deviceControl2.PowerOffDevice();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

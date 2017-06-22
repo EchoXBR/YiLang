@@ -266,7 +266,7 @@ public class CardManager {
 
             return result;
         } else {
-            return null;
+            return result;
         }
     }
 
@@ -331,7 +331,7 @@ public class CardManager {
             }
             return result;
         } else {
-            return null;
+            return result;
         }
     }
 
