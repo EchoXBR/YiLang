@@ -8,6 +8,7 @@
     <string name="btn_verify">验证指纹</string>
     <string name="btn_zhuce">注册</string>
     <string name="btn_zhuce_finger">注册指纹</string>
+    <string name="btn_clear">清除卡片</string>
     <string name="btn_open">打开</string>
 
     <string name="verify_reading_card">正在读卡</string>

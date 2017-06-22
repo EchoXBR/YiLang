@@ -8,6 +8,7 @@
     <string name="btn_zhuce">Enrolment</string>
     <string name="btn_Write_Card">Write Card</string>
     <string name="btn_open">Open Reader</string>
+    <string name="btn_clear">Clear Card</string>
     <string name="btn_zhuce_finger">Enrolment FingerPrint</string>
 
     <string name="verify_reading_card">Read Card...</string>

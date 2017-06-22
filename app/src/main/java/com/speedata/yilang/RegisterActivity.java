@@ -36,7 +36,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private EditText edvName;
     private ImageButton imageButtonGetPhoto;
     private ImageView imgPhoto;
-    private Button btnRegister;
+    private Button btnRegister,btnClear;
 
     String Sex = "";
 
@@ -46,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
         edvName = (EditText) findViewById(R.id.edv_name);
         btnRegister = (Button) findViewById(R.id.btn_register);
+        btnClear = (Button) findViewById(R.id.btn_clear);
         imageButtonGetPhoto = (ImageButton) findViewById(R.id.imbtn_get_photo);
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
         btnRegister.setOnClickListener(this);
@@ -174,6 +175,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
             //开始选择
             startActivityForResult(intent, CHOOSE_PHOTO);
+        } else if (v==btnClear) {
+            cardManager.updateUserInfor(new byte[64]);
+            cardManager.updatePhotoInfor(new byte[1022]);
         }
     }
 

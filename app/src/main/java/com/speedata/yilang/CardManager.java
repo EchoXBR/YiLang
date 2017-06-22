@@ -1,6 +1,5 @@
 package com.speedata.yilang;
 
-import android.app.admin.DeviceAdminInfo;
 import android.content.Context;
 import android.os.SystemClock;
 
@@ -66,8 +65,8 @@ public class CardManager {
      */
     public byte[] getUserInfor() {
 //        changeDir(new byte[]{(byte) 0xad, (byte) 0xf1});
+        byte[] bytes = new byte[0];
         if (RenZheng((byte) 0x05, (byte) 0x01)) {
-            byte[] bytes = new byte[0];
             try {
                 bytes = psam.WriteCmd(new byte[]{0x00, (byte) 0xb0, (byte) 0x85, 0x00, 0x40}, IPsam.PowerType.Psam2);
             } catch (UnsupportedEncodingException e) {
@@ -75,10 +74,8 @@ public class CardManager {
             }
             logger.d("getUserInfor" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
             return bytes;
-
-
         } else {
-            return null;
+            return bytes;
         }
     }
 
