@@ -57,7 +57,13 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         btnEnrolment.setOnClickListener(this);
         btnRead = (Button) findViewById(R.id.btn_read_card);
         btnRead.setOnClickListener(this);
-        cardManager.initPsam(this);
+        Button button = (Button) findViewById(R.id.dakai);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            tcs1GRealize.openReader();
+            }
+        });
         btnClear = (Button) findViewById(R.id.btn_clear);
         btnClear.setOnClickListener(this);
         imgPhoto = (ImageView) findViewById(R.id.img_photo);
@@ -74,9 +80,11 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
             e.printStackTrace();
         }
         tcs1GRealize = new TCS1GRealize(VerifyActivity.this, VerifyActivity.this, handler);
-        if (tcs1GRealize != null) {
-            tcs1GRealize.openReader();//打开指纹寻找reader
-        }
+//        if (tcs1GRealize != null) {
+//            SystemClock.sleep(500);
+//            tcs1GRealize.openReader();//打开指纹寻找reader
+//        }
+        cardManager.initPsam(this);
         dialogShow = new DialogShow(this);
         Log.i(TAG, "onCreate: ");
 
@@ -188,12 +196,12 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
             }).start();
 
         } else if (v == btnComparison) {
-            if (isflag) {
+//            if (isflag) {
 
-                tcs1GRealize.createTemplate();
-            } else {
-                tcs1GRealize.openReader();
-            }
+            tcs1GRealize.createTemplate();
+//            } else {
+//                tcs1GRealize.openReader();
+//            }
 
         } else if (v == btnEnrolment) {
             Intent intent = new Intent(VerifyActivity.this, RegisterActivity.class);

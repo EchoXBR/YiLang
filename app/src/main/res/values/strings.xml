@@ -5,6 +5,7 @@
     <string name="verify_photo">Photo:</string>
     <string name="verify_read_card">Read Card</string>
     <string name="btn_verify">Verify Finger</string>
+    <string name="btn_open_finger">Open Finger</string>
     <string name="btn_zhuce">Enrol Card</string>
     <string name="btn_Write_Card">Write Card</string>
     <string name="btn_open">Open Reader</string>

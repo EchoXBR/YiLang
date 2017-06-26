@@ -132,5 +132,10 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
     protected void onDestroy() {
         super.onDestroy();
 
+        Log.i(TAG, "onDestroy: ");
+        if (tcs1GRealize != null) {
+            tcs1GRealize.closeReader();
+        }
+
     }
 }

@@ -10,6 +10,7 @@
     <string name="btn_zhuce_finger">注册指纹</string>
     <string name="btn_clear">清除卡片</string>
     <string name="btn_open">打开</string>
+    <string name="btn_open_finger">打开指纹</string>
 
     <string name="verify_reading_card">正在读卡</string>
     <string name="init_faild">初始化失败</string>
