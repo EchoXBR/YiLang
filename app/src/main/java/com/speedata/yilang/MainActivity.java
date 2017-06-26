@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        //psam 读取数据测试
+                        cardManager.psamReadSpeedTest();
                         //用户信息写入读取测试
                         testUserData();
 
@@ -87,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             }
                         });
+
 
 //                        int len = name_byte.length / 200;
 //                        for (int i = 0; i < len; i++) {

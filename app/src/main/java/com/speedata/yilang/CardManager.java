@@ -254,15 +254,17 @@ public class CardManager {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-//            bytes1[2] = 0x00;
-//            bytes1[3] = (byte) 0xbe;
-//            bytes1[4] = (byte) 0xc8;
-//            try {
-//                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
-//                logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
+            bytes1[2] = 0x00;
+            bytes1[3] = (byte) 0x00;
+            bytes1[4] = (byte) 0x64;//测试读取100个字节速度
+            try {
+                logger.d("====test start==");
+                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                logger.d("====test end==");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
 
             return result;
         } else {
@@ -270,6 +272,19 @@ public class CardManager {
         }
     }
 
+    public void psamReadSpeedTest(){
+        //测试读取100个字节的速度
+        byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0x64};
+
+        try {
+            logger.d("====test start==");
+            byte[] bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+            logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+            logger.d("====test end==");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 获取指纹信息
