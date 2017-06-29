@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.serialport.DeviceControl;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -71,28 +72,38 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         btnComparison = (Button) findViewById(R.id.btn_Comparisons);
         btnComparison.setOnClickListener(this);
         playSoundPool = PlaySoundPool.getPlaySoundPool(VerifyActivity.this);
-        try {
-            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 63);
-            deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
-            deviceControl.PowerOnDevice();
-            deviceControl2.PowerOnDevice();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        tcs1GRealize = new TCS1GRealize(VerifyActivity.this, VerifyActivity.this, handler);
-//        if (tcs1GRealize != null) {
-//            SystemClock.sleep(500);
-//            tcs1GRealize.openReader();//打开指纹寻找reader
-//        }
+
         cardManager.initPsam(this);
+        initFinger();
         dialogShow = new DialogShow(this);
         Log.i(TAG, "onCreate: ");
 
     }
 
+    private void initFinger() {
+        try {
+            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN_AND_EXPAND, 63,5,6);
+//            deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
+            deviceControl.PowerOnDevice();
+//            deviceControl2.PowerOnDevice();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        tcs1GRealize = new TCS1GRealize(VerifyActivity.this, VerifyActivity.this, handler);
+//        if (tcs1GRealize != null) {
+//            Log.i(TAG, "initFinger: openreader");
+////            tcs1GRealize.openReader();//打开指纹寻找reader
+//        }
+    }
     @Override
     protected void onResume() {
         super.onResume();
+        if (tcs1GRealize != null) {
+            SystemClock.sleep(1000);
+            Log.i(TAG, "initFinger: openreader");
+            tcs1GRealize.openReader();//打开指纹寻找reader
+        }
         fingerFmd1 = null;
         fingerFmd2 = null;
     }
@@ -108,9 +119,11 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                 case 1:
                     isflag = (boolean) msg.obj;
                     if (isflag) {
+                        Log.i(TAG, "finger1:"+isflag);
                         Toast.makeText(VerifyActivity.this, "Init Success", Toast.LENGTH_SHORT).show();
                     } else {
-                        tcs1GRealize.openReader();
+                        Log.i(TAG, "finger2:"+isflag);
+//                        tcs1GRealize.openReader();
 //                        Toast.makeText(VerifyActivity.this, "指纹初始失败，重新初始中", Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -244,7 +257,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         Log.i(TAG, "onDestroy: ");
         try {
             deviceControl.PowerOffDevice();
-            deviceControl2.PowerOffDevice();
+//            deviceControl2.PowerOffDevice();
         } catch (IOException e) {
             e.printStackTrace();
         }
