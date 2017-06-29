@@ -254,17 +254,7 @@ public class CardManager {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            bytes1[2] = 0x00;
-            bytes1[3] = (byte) 0x00;
-            bytes1[4] = (byte) 0x64;//测试读取100个字节速度
-            try {
-                logger.d("====test start==");
-                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
-                logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
-                logger.d("====test end==");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+
 
             return result;
         } else {
@@ -272,19 +262,19 @@ public class CardManager {
         }
     }
 
-    public void psamReadSpeedTest(){
-        //测试读取100个字节的速度
-        byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0x64};
-
-        try {
-            logger.d("====test start==");
-            byte[] bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
-            logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
-            logger.d("====test end==");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void psamReadSpeedTest(){
+//        //测试读取100个字节的速度
+//        byte[] bytes1 = {0x00, (byte) 0xb0, (byte) 0x00, 0x00, (byte) 0x64};
+//
+//        try {
+//            logger.d("====test start==");
+//            byte[] bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+//            logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+//            logger.d("====test end==");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     /**
      * 获取指纹信息
@@ -307,7 +297,7 @@ public class CardManager {
                 if (!isNULL(bytes)) {
                     logger.d("getFingerDatalen =" + bytes.length + "   " + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
                     int pic_len = DataConversionUtils.byteArrayToInt(new byte[]{bytes[0], bytes[1]});
-                    if(pic_len>1024)
+                    if (pic_len > 1024)
                         return null;
                     result = new byte[pic_len];
                     logger.d("getFingerDatalen=" + pic_len);
@@ -341,6 +331,17 @@ public class CardManager {
                         System.arraycopy(bytes, 0, result, (0xc8 * cecle), bytes.length - 2);
                     }
                 }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            bytes1[2] = 0x00;
+            bytes1[3] = (byte) 0x00;
+            bytes1[4] = (byte) 0x64;//测试读取100个字节速度
+            try {
+                logger.d("====test start==");
+                bytes = psam.WriteCmd(bytes1, IPsam.PowerType.Psam2);
+                logger.d("test 384=" + DataConversionUtils.byteArrayToStringLog(bytes, bytes.length));
+                logger.d("====test end==");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
@@ -442,6 +443,9 @@ public class CardManager {
             } else {
                 logger.d("change changedf01 rece>null");
             }
+            if (result.length >= 2 && result[0] == (byte) 0x61) {
+                result = psam.WriteCmd(cmd_dir, IPsam.PowerType.Psam2);
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -481,9 +485,25 @@ public class CardManager {
      * @return 认证结果
      */
     private boolean RenZheng(byte file, byte dack) {
+
         psam.PsamPower(IPsam.PowerType.Psam2);
         changeADF1();
         changeDir(new byte[]{file});
+        //谁波特率位115200
+        //aa bb 06 00 00 00 02 01 07 03
+        //80FC00011000002379ECB20000EB5D200D0305070B
+//        byte[] tt = {(byte) 0x80, (byte) 0xFC, 0x00, 0x01, 0x10, 0x00, 0x00, 0x23, 0x79, (byte) 0xEC, (byte) 0xB2, 0x00, 0x00, (byte) 0xEB, 0x5D,
+//                0x20, 0x0D, 0x03, 0x05, 0x07, 0x0B};
+//        byte[] tt={(byte)0xaa, (byte)0xbb, 0x06, 0x00,0x00, 0x00, 0x02, 0x01, 0x07, 0x04};
+//
+//        try {
+//            logger.d("test");
+//            byte[] test = psam.WriteOriginalCmd(tt, IPsam.PowerType.Psam2);
+//            logger.d("test" + DataConversionUtils.byteArrayToStringLog(test, test.length));
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+
         byte[] random = getRomdon();
         if (!isNULL(random)) {
             try {

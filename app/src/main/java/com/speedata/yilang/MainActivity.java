@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void run() {
                         //psam 读取数据测试
-                        cardManager.psamReadSpeedTest();
+//                        cardManager.psamReadSpeedTest();
                         //用户信息写入读取测试
                         testUserData();
 
