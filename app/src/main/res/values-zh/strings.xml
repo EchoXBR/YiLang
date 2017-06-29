@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">伊朗</string>
+    <string name="app_name">身份验证示例</string>
 
     <string name="verify_user_info">用户信息:</string>
     <string name="verify_photo">照片:</string>

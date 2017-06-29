@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">YiLang</string>
+    <string name="app_name">Authentication Demo</string>
 
     <string name="verify_user_info">User Info:</string>
     <string name="verify_photo">Photo:</string>
