@@ -23,6 +23,15 @@
     <string name="clera_card">卡片信息清除成功</string>
     <string name="cleraing_card">清除中...</string>
 
+    <string name="select_photo">选择本地图片</string>
+    <string name="take_photo">拍照</string>
+    <string name="head_portrait">设置头像</string>
+
+    <string name="btn_Write_Card">写卡</string>
+    <string name="updata">写卡...</string>
+
+
+
 
 
 </resources>

@@ -71,35 +71,35 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Sex = rb.getText().toString();
             }
         });
-        RadioGroup selectPhoto = (RadioGroup) this.findViewById(R.id.radio_photo);
-        //绑定一个匿名监听器
-        selectPhoto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup arg0, int arg1) {
-                //获取变更后的选中项的ID
-                int radioButtonId = arg0.getCheckedRadioButtonId();
-                //根据ID获取RadioButton的实例
-                RadioButton rb = (RadioButton) RegisterActivity.this.findViewById(radioButtonId);
-                //更新文本内容，以符合选中项
-//                                 tv.setText("您的性别是：" + rb.getText());
-                String name = rb.getText().toString();
-
-                switch (name) {
-                    case "Joan":
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_1);
-                        resPhotoID = R.mipmap.photo_1;
-                        imgPhoto.setImageBitmap(bitmap);
-                        break;
-                    case "Tom":
-                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_3);
-                        resPhotoID = R.mipmap.photo_3;
-                        imgPhoto.setImageBitmap(bitmap);
-                        break;
-
-                }
-            }
-        });
+//        RadioGroup selectPhoto = (RadioGroup) this.findViewById(R.id.radio_photo);
+//        //绑定一个匿名监听器
+//        selectPhoto.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//
+//            @Override
+//            public void onCheckedChanged(RadioGroup arg0, int arg1) {
+//                //获取变更后的选中项的ID
+//                int radioButtonId = arg0.getCheckedRadioButtonId();
+//                //根据ID获取RadioButton的实例
+//                RadioButton rb = (RadioButton) RegisterActivity.this.findViewById(radioButtonId);
+//                //更新文本内容，以符合选中项
+////                                 tv.setText("您的性别是：" + rb.getText());
+//                String name = rb.getText().toString();
+//
+//                switch (name) {
+//                    case "Joan":
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_1);
+//                        resPhotoID = R.mipmap.photo_1;
+//                        imgPhoto.setImageBitmap(bitmap);
+//                        break;
+//                    case "Tom":
+//                        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.photo_3);
+//                        resPhotoID = R.mipmap.photo_3;
+//                        imgPhoto.setImageBitmap(bitmap);
+//                        break;
+//
+//                }
+//            }
+//        });
         cardManager = new CardManager();
 //        cardManager.initPsam(this);
     }
@@ -122,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void run() {
                     String name = edvName.getText().toString();
-                    if (name.equals("") || bitmap == null) {
+                    if (name.equals("") || write_photo == null) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -164,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
 
-    Bitmap bitmap;
+//    Bitmap bitmap;
 
 
     @Override
@@ -183,8 +183,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private File cropFile = new File(Environment.getExternalStorageDirectory(), IMAGE_FILE_NAME_TEMP);
     private Uri imageCropUri = Uri.fromFile(cropFile);
-    // 上传头像方式文字数据
-    private String[] items = new String[]{"选择本地图片", "拍照"};
 
     // 请求码
     private static final int IMAGE_REQUEST_CODE = 0;
@@ -196,9 +194,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * 选择是拍照还是选择本地图片
      */
     private void showDialog() {
+// 上传头像方式文字数据
+        String[] items = new String[]{getString(R.string.select_photo), getString(R.string.take_photo)};//"选择本地图片", "拍照"};
 
         new AlertDialog
-                .Builder(this).setTitle("设置头像").setItems(items, new DialogInterface.OnClickListener() {
+                .Builder(this).setTitle(getString(R.string.head_portrait)).setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {

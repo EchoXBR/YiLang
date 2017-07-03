@@ -182,7 +182,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                     final UserInfor userInfor = CardParse.PaseUserInfor(cardManager.getUserInfor());
                     //注册的哪个文件就读哪个文件
                     fingerData = cardManager.getFingerData((byte) 0x07);
-                    if (fingerData.length != 0) {
+                    if (fingerData!=null&&fingerData.length > 0) {
                         //转回指纹FMD特征
                         ImporterImpl importer = new ImporterImpl();
                         try {
@@ -198,7 +198,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                             ProgressDialogUtils.dismissProgressDialog();
                             imgPhoto.setImageBitmap(bitmap);
                             tvUserInfor.setText(userInfor.getName());
-                            if (fingerData.length == 0 && bitmap == null && userInfor == null) {
+                            if (fingerData == null || bitmap == null || userInfor == null) {
                                 btnEnrolment.setVisibility(View.VISIBLE);
                                 ProgressDialogUtils.dismissProgressDialog();
                             }

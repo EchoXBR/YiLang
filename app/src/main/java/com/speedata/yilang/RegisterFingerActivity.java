@@ -46,9 +46,9 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
             e.printStackTrace();
         }
         tcs1GRealize = new TCS1GRealize(RegisterFingerActivity.this, RegisterFingerActivity.this, handler);
-        if (tcs1GRealize != null) {
-            tcs1GRealize.openReader();
-        }
+//        if (tcs1GRealize != null) {
+//            tcs1GRealize.openReader();
+//        }
         Log.i(TAG, "openReader");
         cardManager = new CardManager();
 //        cardManager.initPsam(this);

@@ -431,7 +431,7 @@ public class CardManager {
     /**
      * 切换DF目录
      */
-    private void changeADF1() {
+    private boolean changeADF1() {
         //00 a4 00 00 02 00 ad f1
         //00A4 0000 02 ADF1
         byte[] cmd_dir = {0x00, (byte) 0xA4, 0x00, 0x00, 0x02, (byte) 0xDF, (byte) 0x01};
@@ -442,12 +442,16 @@ public class CardManager {
                 logger.d("change changedf01 rece>" + DataConversionUtils.byteArrayToStringLog(result, result.length));
             } else {
                 logger.d("change changedf01 rece>null");
+                return false;
             }
             if (result.length >= 2 && result[0] == (byte) 0x61) {
                 result = psam.WriteCmd(cmd_dir, IPsam.PowerType.Psam2);
             }
+            return true;
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return false;
         }
 
     }
@@ -487,7 +491,8 @@ public class CardManager {
     private boolean RenZheng(byte file, byte dack) {
 
         psam.PsamPower(IPsam.PowerType.Psam2);
-        changeADF1();
+        if(!changeADF1())
+            return false;
         changeDir(new byte[]{file});
         //谁波特率位115200
         //aa bb 06 00 00 00 02 01 07 03
