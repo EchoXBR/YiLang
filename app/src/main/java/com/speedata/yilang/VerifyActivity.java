@@ -1,7 +1,5 @@
 package com.speedata.yilang;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -25,7 +23,6 @@ import com.speedata.utils.PlaySoundPool;
 import com.speedata.utils.ProgressDialogUtils;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 
 /**
  * TODO 显示读卡信息  验证指纹
@@ -52,8 +49,6 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify);
-
-//        getActionBar().setTitle("Verify Info");
         btnEnrolment = (Button) findViewById(R.id.btn_Enrolment);
         btnEnrolment.setOnClickListener(this);
         btnRead = (Button) findViewById(R.id.btn_read_card);
@@ -62,7 +57,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            tcs1GRealize.openReader();
+                tcs1GRealize.openReader();
             }
         });
         btnClear = (Button) findViewById(R.id.btn_clear);
@@ -72,7 +67,6 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         btnComparison = (Button) findViewById(R.id.btn_Comparisons);
         btnComparison.setOnClickListener(this);
         playSoundPool = PlaySoundPool.getPlaySoundPool(VerifyActivity.this);
-
         cardManager.initPsam(this);
         initFinger();
         dialogShow = new DialogShow(this);
@@ -82,20 +76,17 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
 
     private void initFinger() {
         try {
-            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN_AND_EXPAND, 63,5,6);
-//            deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
+            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 63);
+            deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
             deviceControl.PowerOnDevice();
-//            deviceControl2.PowerOnDevice();
-
+            deviceControl2.PowerOnDevice();
         } catch (IOException e) {
             e.printStackTrace();
         }
         tcs1GRealize = new TCS1GRealize(VerifyActivity.this, VerifyActivity.this, handler);
-//        if (tcs1GRealize != null) {
-//            Log.i(TAG, "initFinger: openreader");
-////            tcs1GRealize.openReader();//打开指纹寻找reader
-//        }
+
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -119,10 +110,10 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                 case 1:
                     isflag = (boolean) msg.obj;
                     if (isflag) {
-                        Log.i(TAG, "finger1:"+isflag);
+                        Log.i(TAG, "finger1:" + isflag);
                         Toast.makeText(VerifyActivity.this, "Init Success", Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.i(TAG, "finger2:"+isflag);
+                        Log.i(TAG, "finger2:" + isflag);
 //                        tcs1GRealize.openReader();
 //                        Toast.makeText(VerifyActivity.this, "指纹初始失败，重新初始中", Toast.LENGTH_SHORT).show();
                     }
@@ -135,40 +126,19 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                     break;
                 case 6:
                     int mScore = (Integer) msg.obj;
-                    DecimalFormat formatting = new DecimalFormat("##.######");
-                    String comparison = "Dissimilarity Score: " + String.valueOf(mScore) + ", False match rate: "
-                            + Double.valueOf(formatting.format((double) mScore / 0x7FFFFFFF)) +
-                            " (" + (mScore < (0x7FFFFFFF / 100000) ? "match" : "no match") + ")";
-                    Log.i("result", comparison);
                     if (mScore < (0x7FFFFFFF / 100000)) {
-//                        dialog("通过验证");
-
                         playSoundPool.playLaser();
                         dialogShow.DialogShow(R.drawable.pass);
                     } else {
 
                         dialogShow.DialogShow(R.drawable.fail);
                         playSoundPool.playError();
-//                        dialog("验证失败");
                     }
                     break;
             }
         }
     };
 
-    protected void dialog(String s) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(VerifyActivity.this);
-//        builder.setMessage(s);
-        builder.setIcon(R.drawable.pass);
-        builder.setTitle("验证结果");
-        builder.setPositiveButton("", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
 
     @Override
     public void onClick(View v) {
@@ -182,7 +152,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
                     final UserInfor userInfor = CardParse.PaseUserInfor(cardManager.getUserInfor());
                     //注册的哪个文件就读哪个文件
                     fingerData = cardManager.getFingerData((byte) 0x07);
-                    if (fingerData!=null&&fingerData.length > 0) {
+                    if (fingerData != null && fingerData.length > 0) {
                         //转回指纹FMD特征
                         ImporterImpl importer = new ImporterImpl();
                         try {
@@ -257,7 +227,7 @@ public class VerifyActivity extends AppCompatActivity implements View.OnClickLis
         Log.i(TAG, "onDestroy: ");
         try {
             deviceControl.PowerOffDevice();
-//            deviceControl2.PowerOffDevice();
+            deviceControl2.PowerOffDevice();
         } catch (IOException e) {
             e.printStackTrace();
         }

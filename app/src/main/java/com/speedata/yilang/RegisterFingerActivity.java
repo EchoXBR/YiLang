@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.serialport.DeviceControl;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 
 import com.digitalpersona.uareu.Fmd;
 import com.mylibrary.realize.TCS1GRealize;
-
-import java.io.IOException;
 
 /**
  * TODO 指纹注册
@@ -27,31 +24,18 @@ public class RegisterFingerActivity extends AppCompatActivity implements View.On
     private TCS1GRealize tcs1GRealize = null;
     private byte[] fingerTemplebytes;
     private CardManager cardManager = null;
-    private DeviceControl deviceControl;
-    private DeviceControl deviceControl2;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_finger);
-//        getActionBar().setTitle("Enrollment FingerPrint");
-        try {
-            deviceControl = new DeviceControl(DeviceControl.PowerType.MAIN, 63);
-            deviceControl2 = new DeviceControl(DeviceControl.PowerType.MAIN, 93);
-            deviceControl.PowerOnDevice();
-            deviceControl2.PowerOnDevice();
-//            SystemClock.sleep(200);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         tcs1GRealize = new TCS1GRealize(RegisterFingerActivity.this, RegisterFingerActivity.this, handler);
-//        if (tcs1GRealize != null) {
-//            tcs1GRealize.openReader();
-//        }
+        if (tcs1GRealize != null) {
+            tcs1GRealize.openReader();
+        }
         Log.i(TAG, "openReader");
         cardManager = new CardManager();
-//        cardManager.initPsam(this);
         initGui();
     }
 
